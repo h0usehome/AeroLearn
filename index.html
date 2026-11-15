@@ -1,110 +1,115 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>AeroLearn</title>
-
-  <!-- Официальный скрипт Telegram Mini Apps -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <style>
-    :root {
-      --bg: #0A0A0A;
-      --card: #161616;
-      --border: #2A2A2A;
-      --text: #FFFFFF;
-      --muted: #A3A3A3;
-      --accent: #FFB547;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    }
-    .box { width: 100%; max-width: 360px; text-align: center; }
-    h1 { margin: 16px 0 4px; font-size: 32px; letter-spacing: -1px; }
-    h1 span { color: var(--accent); }
-    .sub { margin: 0 0 24px; font-size: 13px; letter-spacing: 3px; color: var(--muted); }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      text-align: left;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    .card b { color: var(--accent); }
-    button {
-      width: 100%;
-      height: 52px;
-      margin-top: 16px;
-      border: 0;
-      border-radius: 14px;
-      background: var(--accent);
-      color: #1A1200;
-      font: 700 16px -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AeroLearn</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#0A0A0A;--card:#161616;--bd:#2A2A2A;--bd2:#3D3D3D;--tx:#FFFFFF;--mu:#A3A3A3;--ac:#FFB547;--ok:#4ADE80;--bad:#FF7A7A}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 -apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+#app{max-width:480px;min-height:100vh;margin:0 auto;display:flex;flex-direction:column}
+#view{flex:1;padding:24px 16px 96px;display:flex;flex-direction:column;gap:14px}
+h1{margin:0;font-size:24px}
+.k{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px}
+.m{color:var(--mu);font-size:13px}
+.row{display:flex;align-items:center;gap:12px}
+.sb{justify-content:space-between}
+.ch{padding:8px 14px;border-radius:999px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font-weight:500;font-size:13px;font-family:inherit}
+.ch.on{background:var(--ac);color:#1A1200;border-color:var(--ac)}
+.in{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bd2);border-radius:14px;padding:0 14px;height:52px}
+.in input,.fi{background:none;border:0;outline:0;color:var(--tx);font-weight:500;font-size:15px;font-family:inherit}
+.in input{flex:1;min-width:0}
+.fi{width:100%;background:var(--card);border:1px solid var(--bd2);border-radius:12px;padding:0 12px;height:48px}
+textarea.fi{height:120px;padding:12px;resize:none;line-height:1.5}
+.bt{height:52px;border:0;border-radius:14px;background:var(--ac);color:#1A1200;font-weight:700;font-size:16px;font-family:inherit;cursor:pointer;width:100%}
+.bar{height:6px;border-radius:3px;background:var(--bd);overflow:hidden}.bar i{display:block;height:100%;background:var(--ac)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{text-align:left;color:var(--tx);font-family:inherit;font-size:16px;cursor:pointer}
+.opt{width:100%;text-align:left;color:var(--tx);font:inherit;cursor:pointer}
+.opt.ok{border:2px solid var(--ok)}.opt.bad{border:2px solid var(--bad)}
+.okc{color:var(--ok)}.badc{color:var(--bad)}
+.t{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:68px;padding-bottom:env(safe-area-inset-bottom);background:#0F0F0F;border-top:1px solid var(--bd);display:flex}
+.t button{flex:1;background:none;border:0;color:var(--mu);font-size:11px;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+.t button.on{color:var(--ac)}
+details.k summary{cursor:pointer;font-weight:600;list-style:none}
+details.k p{margin:10px 0 0;font-size:14px;line-height:1.5;color:var(--mu)}
+.sw{display:flex;gap:10px;font-size:14px;margin-top:8px}.sw i{width:14px;height:14px;border-radius:4px;margin-top:3px;flex:none}
+.tag{align-self:flex-start;background:var(--ac);color:#1A1200;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px}
+</style>
 </head>
 <body>
-  <main class="box">
-    <svg width="96" height="96" viewBox="0 0 120 120" fill="none" role="img" aria-label="Логотип AeroLearn">
-      <circle cx="60" cy="60" r="52" stroke="#FFFFFF" stroke-width="4"/>
-      <path d="M60 8v9M60 103v9M8 60h9M103 60h9" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
-      <path d="M60 26L84 86L60 74L36 86Z" fill="#FFB547" stroke="#FFB547" stroke-width="4" stroke-linejoin="round"/>
-    </svg>
-    <h1>Aero<span>Learn</span></h1>
-    <p class="sub">ОБУЧЕНИЕ ПИЛОТОВ</p>
+<div id="app"><main id="view"></main><nav class="t" id="tabs" aria-label="Разделы"></nav></div>
+<script>
+const tg=window.Telegram&&window.Telegram.WebApp;
+if(tg&&tg.initData){tg.ready();tg.expand();tg.setHeaderColor("#0A0A0A");tg.setBackgroundColor("#0A0A0A");}
+const hap=()=>{try{tg.HapticFeedback.impactOccurred("light")}catch(e){}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ic=p=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const TABS=[["home","Главная",'<path d="M3 11l9-8 9 8v10H3z"/>'],["search","Поиск",'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>'],["quiz","Тесты",'<path d="M5 12l5 5 9-10"/>'],["cheats","Памятки",'<path d="M4 4h12a4 4 0 014 4v12H8a4 4 0 01-4-4z"/>']];
+const SRCH=ic('<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>');
 
-    <div class="card" id="info">Загрузка…</div>
-    <button id="btn" type="button">Проверить связь с Telegram</button>
-  </main>
+/* Демо-база для поиска. В рабочей версии ответ собирает ИИ по вашим документам. */
+const KB=[
+{k:["v1","принятия решения"],a:"V1 — скорость принятия решения на взлёте. До V1 при отказе взлёт прекращают, после V1 — продолжают.",s:[["РЛЭ самолёта","Раздел 4. Взлёт","RU"],["FCOM","Normal procedures. Takeoff","EN"]]},
+{k:["egt","выхлоп"],a:"EGT — температура выхлопных газов. Показывает тепловую нагрузку на двигатель, превышение предела может его повредить.",s:[["РЛЭ самолёта","Силовая установка","RU"]]},
+{k:["вариометр","vsi"],a:"Вариометр показывает вертикальную скорость: набор высоты или снижение.",s:[["Памятка","Приборы","RU"]]}];
 
-  <script>
-    const tg = window.Telegram && window.Telegram.WebApp;
-    const info = document.getElementById("info");
-    const btn = document.getElementById("btn");
+/* Вопросы тестов */
+const Q=[
+{t:"choice",topic:"Приборы",q:"Что показывает вариометр?",o:["Приборную скорость","Вертикальную скорость","Угол тангажа","Магнитный курс"],ok:1,why:"Вариометр показывает скорость набора высоты или снижения."},
+{t:"scn",topic:"Ситуация",q:"Что вы будете делать?",d:[["Фаза","Взлёт, разбег"],["Скорость","70 kt"],["V1","90 kt"],["Событие","Отказ двигателя"]],steps:[["Выдерживать направление",["педал","направлен","курс"]],["Убрать газ",["газ","сбрас","убра"]],["Прекратить взлёт",["прекра","прерв","останов","тормоз"]]]},
+{t:"par",topic:"Приборы",q:"За какие параметры отвечают эти показатели?",i:[["EGT","Температура выхлопных газов",["температур","выхлоп"],[40,14]],["OIL PRESS","Давление масла",["давлен"],[20,18]],["N1","Обороты вентилятора или компрессора низкого давления",["оборот","вращ"],[36,16]]]}];
 
-    if (tg && tg.initData) {
-      // Сообщаем Telegram, что приложение готово, и раскрываем на весь экран
-      tg.ready();
-      tg.expand();
+const INS=[["ASI","Указатель скорости","Приборная скорость, узлы.",1],["AI","Авиагоризонт","Положение самолёта относительно горизонта: крен и тангаж."],["ALT","Высотомер","Высота по давлению; настраивается по давлению аэродрома."],["VSI","Вариометр","Вертикальная скорость: набор или снижение."],["HSI","Курсовой прибор","Курс самолёта и положение относительно выбранного курса."]];
+const ARCS=[["#F2F4F7","Белая","скорости с выпущенными закрылками"],["#4ADE80","Зелёная","нормальный рабочий диапазон"],["#FFD23F","Жёлтая","только в спокойном воздухе"],["#FF5C5C","Красная черта","VNE, превышать нельзя"]];
 
-      // Фон шапки под цвет приложения
-      tg.setHeaderColor("#0A0A0A");
-      tg.setBackgroundColor("#0A0A0A");
+let tab="home",sq="",qz={on:0,i:0,sc:0,rev:0,res:null};
 
-      // ВНИМАНИЕ: initDataUnsafe можно использовать только для показа имени.
-      // Для авторизации initData нужно проверять на сервере по токену бота.
-      const user = tg.initDataUnsafe.user || {};
-      info.innerHTML =
-        "<b>Приложение запущено в Telegram.</b><br>" +
-        "Пользователь: " + (user.first_name || "неизвестно") + "<br>" +
-        "Язык: " + (user.language_code || "—") + "<br>" +
-        "Платформа: " + tg.platform + "<br>" +
-        "Тема: " + tg.colorScheme;
+const gauge=(l,p)=>`<svg width="56" height="56" viewBox="0 0 56 56" fill="none" role="img" aria-label="Прибор ${l}"><circle cx="28" cy="28" r="25" stroke="#3D3D3D" stroke-width="2"/><path d="M12 38a18 18 0 0 1 32 0" stroke="#FFF" stroke-width="3" stroke-linecap="round"/><path d="M28 30L${p[0]} ${p[1]}" stroke="#FFB547" stroke-width="3" stroke-linecap="round"/><circle cx="28" cy="30" r="3" fill="#FFF"/></svg>`;
 
-      btn.addEventListener("click", function () {
-        tg.HapticFeedback.notificationOccurred("success");
-        tg.showAlert("Связь с Telegram работает!");
-      });
-    } else {
-      info.innerHTML =
-        "<b>Страница открыта вне Telegram.</b><br>" +
-        "Откройте приложение через бота: " +
-        "<a href=\"https://t.me/AeroLearning_bot\" style=\"color:#FFB547\">@AeroLearning_bot</a>";
-      btn.style.display = "none";
-    }
-  </script>
+const V={
+home:()=>`<div class="row sb"><div><div class="m">AeroLearn</div><h1>Готовимся к полётам</h1></div></div>
+<form id="sf" class="in">${SRCH}<input name="q" aria-label="Поиск по базе знаний" placeholder="Спросите по документации..."></form>
+<div class="k"><div class="m">Продолжить</div><div style="font-weight:600;font-size:17px;margin:6px 0 10px">Аэродинамика. Лекция 3: Подъёмная сила</div><div class="bar"><i style="width:40%"></i></div><div class="m" style="margin-top:8px">3 из 8 лекций</div></div>
+<div class="grid">
+<button class="k tile" data-go="quiz"><b>Тесты</b><div class="m">Проверка знаний</div></button>
+<button class="k tile" data-go="cheats"><b>Памятки</b><div class="m">Приборы и системы</div></button>
+<button class="k tile" data-go="search"><b>Поиск</b><div class="m">Ответ по документам</div></button>
+<button class="k tile" data-go="home"><b>Лекции</b><div class="m">Скоро</div></button></div>`,
+search:()=>{const q=sq.toLowerCase().trim();const r=q&&KB.find(x=>x.k.some(w=>q.includes(w)));
+return `<h1>Поиск по базе знаний</h1><form id="sf" class="in">${SRCH}<input name="q" aria-label="Запрос" value="${esc(sq)}" placeholder="Например: что такое V1"></form>
+<div class="row" style="flex-wrap:wrap">${["Что такое V1","Что показывает EGT","Вариометр"].map(x=>`<button class="ch" data-q="${x}">${x}</button>`).join("")}</div>`+
+(!q?`<div class="m">Введите вопрос или выберите пример.</div>`:r?`<div class="k" style="border-color:var(--ac);display:flex;flex-direction:column;gap:10px"><span class="tag">ОТВЕТ ИИ (ДЕМО)</span><div style="font-size:16px;line-height:1.5">${r.a}</div></div><div class="m" style="font-weight:600">Источники</div>`+r.s.map(s=>`<div class="k row sb"><div><b style="font-size:14px">${s[0]}</b><div class="m">${s[1]}</div></div><span class="ch">${s[2]}</span></div>`).join("")+`<div class="m" style="font-size:12px">Демо-ответ из встроенных примеров. В рабочей версии ответ соберёт ИИ по вашим документам.</div>`:`<div class="k">В демо-базе нет ответа на этот запрос.</div>`);},
+quiz:()=>{if(!qz.on)return `<h1>Тесты</h1><div class="k"><b>Выбор ответа</b><div class="m">Выберите верный вариант</div></div><div class="k"><b>Ситуация</b><div class="m">«Что вы будете делать?» с ответом своими словами</div></div><div class="k"><b>Показатели</b><div class="m">Впишите, за что отвечает каждый прибор</div></div><button class="bt" data-act="start">Начать тест (3 вопроса)</button>`;
+if(qz.res!==null)return `<h1>Результат</h1><div class="k" style="text-align:center"><div style="font-size:48px;font-weight:800;color:var(--ac)">${Math.round(qz.sc*10)/10} из ${Q.length}</div><div class="m">Правильность открытых ответов определяет простое сравнение слов. В рабочей версии это сделает ИИ.</div></div><button class="bt" data-act="start">Пройти ещё раз</button>`;
+const q=Q[qz.i],h=`<div class="row sb"><span class="m">Вопрос ${qz.i+1} из ${Q.length}</span><span class="ch">${q.topic}</span></div><div class="bar"><i style="width:${(qz.i+1)/Q.length*100}%"></i></div><h1 style="margin-top:6px">${q.q}</h1>`;
+const nx=`<button class="bt" data-act="next">${qz.i+1<Q.length?"Дальше":"Показать результат"}</button>`;
+if(q.t==="choice")return h+q.o.map((o,i)=>`<button class="k opt ${qz.rev?(i===q.ok?"ok":i===qz.pick?"bad":""):""}" data-opt="${i}" ${qz.rev?"disabled":""}>${o}</button>`).join("")+(qz.rev?`<div class="k"><b class="${qz.pick===q.ok?"okc":"badc"}">${qz.pick===q.ok?"Верно":"Неверно"}</b><div style="margin-top:6px;font-size:14px">${q.why}</div></div>${nx}`:"");
+if(q.t==="scn"){const d=`<div class="k" style="padding:4px 14px">${q.d.map(r=>`<div class="row sb" style="padding:8px 0;border-bottom:1px solid var(--bd)"><span class="m">${r[0]}</span><b style="font-size:14px">${r[1]}</b></div>`).join("")}</div>`;
+if(!qz.rev)return h+d+`<label class="m" for="a1">Ваши действия по порядку</label><textarea id="a1" class="fi" placeholder="Опишите, что вы сделаете..."></textarea><button class="bt" data-act="check">Проверить ответ</button>`;
+return h+d+`<div class="k">${qz.fb.map(s=>`<div class="${s[1]?"okc":"badc"}" style="padding:4px 0"><b>${s[1]?"Названо":"Пропущено"}:</b> ${s[0]}</div>`).join("")}</div>${nx}`;}
+if(!qz.rev)return h+q.i.map((p,n)=>`<div class="k" style="display:flex;flex-direction:column;gap:10px"><div class="row">${gauge(p[0],p[3])}<b style="font-size:18px">${p[0]}</b></div><input class="fi" id="p${n}" aria-label="За что отвечает ${p[0]}" placeholder="Впишите ответ"></div>`).join("")+`<button class="bt" data-act="check">Проверить ответ</button>`;
+return h+q.i.map((p,n)=>`<div class="k"><b>${p[0]}</b> <span class="${qz.fb[n]?"okc":"badc"}">${qz.fb[n]?"верно":"неверно"}</span><div class="m" style="margin-top:4px">Эталон: ${p[1]}</div></div>`).join("")+nx;},
+cheats:()=>`<h1>Памятки: приборы</h1>`+INS.map(i=>`<details class="k"><summary>${i[1]} <span class="m">(${i[0]})</span></summary><p>${i[2]}</p>${i[3]?ARCS.map(a=>`<div class="sw"><i style="background:${a[0]}"></i><span><b style="color:#FFF">${a[1]}</b> — ${a[2]}</span></div>`).join(""):""}</details>`).join("")};
+
+function render(){$("#view").innerHTML=V[tab]();$("#tabs").innerHTML=TABS.map(t=>`<button data-go="${t[0]}" class="${t[0]===tab?"on":""}">${ic(t[2])}${t[1]}</button>`).join("");}
+function check(){const q=Q[qz.i],has=(s,ks)=>ks.some(k=>s.includes(k));
+if(q.t==="scn"){const v=$("#a1").value.toLowerCase();qz.fb=q.steps.map(s=>[s[0],has(v,s[1])]);qz.sc+=qz.fb.filter(x=>x[1]).length/q.steps.length;}
+else{qz.fb=q.i.map((p,n)=>has($("#p"+n).value.toLowerCase(),p[2]));qz.sc+=qz.fb.filter(Boolean).length/q.i.length;}
+qz.rev=1;}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-go],[data-act],[data-opt],[data-q]");if(!t)return;hap();const d=t.dataset;
+if(d.go){tab=d.go;}
+else if(d.q){sq=d.q;}
+else if(d.opt!==undefined){qz.pick=+d.opt;qz.rev=1;if(qz.pick===Q[qz.i].ok)qz.sc++;}
+else if(d.act==="start")qz={on:1,i:0,sc:0,rev:0,res:null};
+else if(d.act==="check")check();
+else if(d.act==="next"){if(qz.i+1<Q.length){qz.i++;qz.rev=0;}else qz.res=qz.sc;}
+render();window.scrollTo(0,0);});
+document.addEventListener("submit",e=>{if(e.target.id==="sf"){e.preventDefault();sq=e.target.q.value;tab="search";render();}});
+render();
+</script>
 </body>
 </html>
