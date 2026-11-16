@@ -2,13 +2,13 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>AeroLearn</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{--bg:#0A0A0A;--card:#161616;--bd:#2A2A2A;--bd2:#3D3D3D;--tx:#FFFFFF;--mu:#A3A3A3;--ac:#FFB547;--ok:#4ADE80;--bad:#FF7A7A}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 -apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+body{margin:0;touch-action:manipulation;-webkit-text-size-adjust:100%;background:var(--bg);color:var(--tx);font:16px/1.4 -apple-system,"Segoe UI",Roboto,Arial,sans-serif}
 button{font-family:inherit;color:var(--tx);transition:transform .12s ease,background-color .2s,border-color .2s,color .2s,opacity .2s}
 button:active:not(:disabled){transform:scale(.96)}
 #app{max-width:480px;min-height:100vh;margin:0 auto}
@@ -20,7 +20,7 @@ h1{margin:0;font-size:24px}
 .ch{padding:8px 14px;border-radius:999px;border:1px solid var(--bd);background:var(--card);font-weight:500;font-size:13px;cursor:pointer}
 .ch.on{background:var(--ac);color:#1A1200;border-color:var(--ac)}
 .in{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bd2);border-radius:14px;padding:0 14px;height:52px}
-.in input,.fi{background:none;border:0;outline:0;color:var(--tx);font-weight:500;font-size:15px;font-family:inherit}
+.in input,.fi{background:none;border:0;outline:0;color:var(--tx);font-weight:500;font-size:16px;font-family:inherit}
 .in input{flex:1;min-width:0}
 .fi{width:100%;background:var(--card);border:1px solid var(--bd2);border-radius:12px;padding:0 12px;height:48px}
 textarea.fi{height:120px;padding:12px;resize:none;line-height:1.5}
@@ -47,11 +47,10 @@ details.k p{margin:10px 0 0;font-size:14px;line-height:1.5;color:var(--mu)}
 .sw{display:flex;gap:10px;font-size:14px;margin-top:8px}.sw i{width:14px;height:14px;border-radius:4px;margin-top:3px;flex:none}
 .tag{align-self:flex-start;background:var(--ac);color:#1A1200;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px}
 .av{width:56px;height:56px;border-radius:50%;background:var(--ac);color:#1A1200;font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center;flex:none}
-@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes in{from{opacity:0;transform:translateX(var(--dx,0px)) translateY(10px)}to{opacity:1;transform:none}}
 @keyframes grow{from{width:0}}
-.go{animation:in .3s cubic-bezier(.2,.7,.2,1)}.go .bar i{animation:grow .7s cubic-bezier(.2,.7,.2,1)}
+.go{animation:in .38s cubic-bezier(.2,.7,.2,1)}.out{opacity:0;transform:translateX(calc(var(--dx,0px)*-.6));transition:opacity .14s ease,transform .14s ease}.go .bar i{animation:grow .7s cubic-bezier(.2,.7,.2,1)}
 .noanim *,.noanim *::before{animation:none!important;transition:none!important}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -68,7 +67,7 @@ const TABS=[["quiz","Тесты",'<path d="M5 12l5 5 9-10"/>'],["cheats","Пам
 const fresh=()=>({n:0,pts:0,max:0,xp:0,streak:0,last:"",topics:{},hist:[]});
 let cfg=Object.assign({haptic:1,anim:1,size:1,remind:0,lang:"all"},ST.g("cfg",{}));
 let st=Object.assign(fresh(),ST.g("st",{}));
-const hap=()=>{try{tg.HapticFeedback.impactOccurred("light")}catch(e){}};
+const hap=k=>{if(!cfg.haptic)return;try{if(inTg&&tg.HapticFeedback){const h=tg.HapticFeedback;k==="ok"?h.notificationOccurred("success"):k==="bad"?h.notificationOccurred("error"):h.impactOccurred("light");return}}catch(e){}try{navigator.vibrate&&navigator.vibrate(k==="bad"?[30,40,30]:k==="ok"?[15,30,15]:12)}catch(e){}};
 const day=d=>(d||new Date()).toISOString().slice(0,10);
 const sh=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
 
@@ -139,12 +138,18 @@ settings:()=>`<h1>Настройки</h1>${tgl("haptic","Вибрация","От
 <div class="m" style="font-size:12px;line-height:1.5">AeroLearn — учебное приложение. Оно не заменяет официальные документы, РЛЭ конкретного самолёта и инструктора.</div>`};
 
 function apply(){document.body.classList.toggle("noanim",!cfg.anim);$("#view").style.zoom=[.9,1,1.12][cfg.size];}
-function render(){const v=$("#view"),r=S.run,key=S.tab+(r?(r.done?"d":"r"+r.i+(r.rev?"v":"")):"");
-v.innerHTML=V[S.tab]();if(key!==lastKey){v.classList.remove("go");void v.offsetWidth;v.classList.add("go");window.scrollTo(0,0);lastKey=key;}
-$("#tabs").innerHTML=TABS.map(t=>t[0]==="home"?`<button class="hb ${S.tab==="home"||S.tab==="search"?"on":""}" data-go="home"><span class="hc">${ic(t[2])}</span>${t[1]}</button>`:`<button class="${t[0]===S.tab?"on":""}" data-go="${t[0]}">${ic(t[2])}${t[1]}</button>`).join("");
-if(inTg){S.tab==="search"?tg.BackButton.show():tg.BackButton.hide();}apply();}
+let pend=0,lastIdx=2,lastTab="";
+const keyOf=()=>{const r=S.run;return S.tab+(r?(r.done?"d":"r"+r.i+(r.rev?"v":"")):"")};
+function bar(){$("#tabs").innerHTML=TABS.map(t=>t[0]==="home"?`<button class="hb ${S.tab==="home"||S.tab==="search"?"on":""}" data-go="home"><span class="hc">${ic(t[2])}</span>${t[1]}</button>`:`<button class="${t[0]===S.tab?"on":""}" data-go="${t[0]}">${ic(t[2])}${t[1]}</button>`).join("");}
+function draw(){const v=$("#view"),key=keyOf(),i=TABS.findIndex(t=>t[0]===S.tab),idx=i<0?5:i;
+v.innerHTML=V[S.tab]();v.classList.remove("out");
+if(key!==lastKey){const dir=S.tab!==lastTab&&idx<lastIdx?-1:1;v.style.setProperty("--dx",dir*28+"px");v.classList.remove("go");void v.offsetWidth;v.classList.add("go");window.scrollTo(0,0);lastKey=key;lastIdx=idx;lastTab=S.tab;}
+bar();if(inTg){S.tab==="search"?tg.BackButton.show():tg.BackButton.hide();}apply();}
+function render(){if(pend)return;bar();const v=$("#view");
+if(cfg.anim&&lastKey&&keyOf()!==lastKey){pend=1;const i=TABS.findIndex(t=>t[0]===S.tab);v.style.setProperty("--dx",((i<0?5:i)<lastIdx?-28:28)+"px");v.classList.add("out");setTimeout(()=>{pend=0;draw()},140);return;}
+draw();}
 function start(){const l=sh(pool()).slice(0,10).map(q=>{if(q.t!=="choice")return q;const o=sh(q.o.map((t,i)=>[t,i]));return Object.assign({},q,{o:o.map(x=>x[0]),ok:o.findIndex(x=>x[1]===q.ok)})});S.run={list:l,i:0,rev:0,log:[],sc:0,done:0};}
-function fin(f){const r=S.run,q=r.list[r.i];r.log.push({q:q.s||q.q,topic:q.topic,f:f,c:q.t==="choice"?q.o[q.ok]:""});r.sc+=f;if(S.mode==="exam")advance();else r.rev=1;}
+function fin(f){const r=S.run,q=r.list[r.i];r.log.push({q:q.s||q.q,topic:q.topic,f:f,c:q.t==="choice"?q.o[q.ok]:""});r.sc+=f;if(S.mode==="exam")advance();else{r.rev=1;hap(f===1?"ok":f===0?"bad":"")}}
 function advance(){const r=S.run;if(r.i+1<r.list.length){r.i++;r.rev=0;return;}
 const n=r.list.length;r.done=1;r.xp=Math.round(r.sc*10);st.n++;st.pts+=r.sc;st.max+=n;st.xp+=r.xp;
 r.log.forEach(l=>{const t=st.topics[l.topic]||(st.topics[l.topic]={p:0,m:0});t.p+=l.f;t.m++;});
@@ -154,8 +159,8 @@ function check(){const r=S.run,q=r.list[r.i],has=(s,k)=>k.some(x=>s.includes(x))
 if(q.t==="scn"){const v=$("#a1").value.toLowerCase();r.fb=q.steps.map(s=>[s[0],has(v,s[1])]);f=r.fb.filter(x=>x[1]).length/q.steps.length;}
 else{r.fb=q.i.map((p,k)=>has($("#p"+k).value.toLowerCase(),p[2]));f=r.fb.filter(Boolean).length/q.i.length;}fin(f);}
 
-document.addEventListener("click",e=>{const t=e.target.closest("[data-go],[data-act]");if(!t||t.disabled)return;if(cfg.haptic)hap();const d=t.dataset,a=d.act,v=d.v;
-if(a==="tog"){cfg[v]=cfg[v]?0:1;ST.s("cfg",cfg);t.classList.toggle("on");t.setAttribute("aria-checked",!!cfg[v]);apply();return;}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-go],[data-act]");if(!t||t.disabled)return;if(t.dataset.act!=="tog")hap();const d=t.dataset,a=d.act,v=d.v;
+if(a==="tog"){cfg[v]=cfg[v]?0:1;ST.s("cfg",cfg);t.classList.toggle("on");t.setAttribute("aria-checked",!!cfg[v]);apply();hap();return;}
 if(a==="reset"){const ok=()=>{st=fresh();ST.s("st",st);render()},m="Сбросить всю статистику?";(inTg&&tg.showConfirm)?tg.showConfirm(m,y=>y&&ok()):(confirm(m)&&ok());return;}
 if(d.go){S.tab=d.go;}
 else if(a==="q")S.sq=v;
@@ -170,6 +175,10 @@ else if(a==="size"){cfg.size=+v;ST.s("cfg",cfg);}
 else if(a==="lang"){cfg.lang=v;ST.s("cfg",cfg);}
 render();});
 document.addEventListener("submit",e=>{if(e.target.id==="sf"){e.preventDefault();S.sq=e.target.q.value;S.tab="search";render();}});
+["gesturestart","gesturechange","gestureend"].forEach(n=>document.addEventListener(n,e=>e.preventDefault()));
+document.addEventListener("touchmove",e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
+document.addEventListener("wheel",e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
+document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&["+","-","=","0"].includes(e.key))e.preventDefault()});
 if(inTg)tg.BackButton.onClick(()=>{S.tab="home";render();});
 render();
 </script>
